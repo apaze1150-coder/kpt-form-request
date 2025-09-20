@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KPT Form Request ป้าย Promotion</title>
+  <style>
+    :root{
+      --male:#1e3a8a; --female:#db2777;
+      --bg:#f8fafc; --card:#ffffff; --line:#e5e7eb; --text:#0f172a; --muted:#475569;
+      --accent: var(--male);
+    }
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Thai","Noto Sans",sans-serif}
+    body{margin:0;background:var(--bg);color:var(--text)}
+    .wrap{max-width:860px;margin:32px auto;padding:0 16px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(2,6,23,.06);padding:22px}
+    .header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+    h1{margin:0;font-size:1.35rem;color:var(--accent)}
+    .gender-switch{margin-left:auto;display:flex;gap:8px}
+    .gbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;padding:8px 10px;border-radius:999px;cursor:pointer;font-weight:600;transition:all .15s}
+    .gbtn[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 20%, transparent)}
+    .male{color:var(--male)} .female{color:var(--female)}
+    .grid{display:grid;gap:12px;margin-top:14px}
+    label{font-weight:600}
+    .hint{color:var(--muted);font-size:.92rem}
+    input[type="text"],input[type="number"],textarea{
+      width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;outline:0;
+      transition:border-color .15s, box-shadow .15s;
+    }
+    input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 20%, transparent)}
+    textarea{min-height:140px;resize:vertical}
+    /* SHOP แสดงพิมพ์ใหญ่เสมอใน UI */
+    #shop{text-transform:uppercase}
+    .sizes{display:grid;gap:10px}
+    .size-row{display:grid;grid-template-columns:auto 120px 100px;gap:10px;align-items:center;padding:10px;border:1px dashed var(--line);border-radius:10px;background:#fbfdff}
+    .size-row.disabled{opacity:.6}
+    .qty-wrap{display:flex;align-items:center;gap:8px}
+    .unit{color:var(--muted)}
+    .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+    button{border:0;border-radius:999px;padding:11px 16px;cursor:pointer;font-weight:700;color:#fff;background:var(--accent);transition:transform .05s,opacity .15s,background .2s}
+    button.secondary{background:#0f766e} button.ghost{background:#e2e8f0;color:#0f172a}
+    button:active{transform:scale(.98)}
+    .ok{color:#16a34a;margin-left:8px;opacity:0;transition:opacity .2s}
+    .ok.show{opacity:1}
+    .readonly{background:#f1f5f9}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="header">
+        <h1>KPT Form Request ป้าย Promotion</h1>
+        <div class="gender-switch" role="group" aria-label="เลือกเพศเพื่อกำหนดโทนสีและคำลงท้าย">
+          <button id="maleBtn" class="gbtn" aria-pressed="true" data-gender="male" title="โทนสีน้ำเงิน + ลงท้าย ขอบคุณครับ">
+            <span class="male">🚹 ชาย</span>
+          </button>
+          <button id="femaleBtn" class="gbtn" aria-pressed="false" data-gender="female" title="โทนสีชมพู + ลงท้าย ขอบคุณค่ะ">
+            <span class="female">🚺 หญิง</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <!-- วันที่ปัจจุบัน (อ่านอย่างเดียว) -->
+        <div>
+          <label for="dateShow">วันที่เบิก</label>
+          <div class="hint">ระบบใส่วันที่ปัจจุบันให้อัตโนมัติ (วัน/เดือน/ค.ศ.)</div>
+          <input id="dateShow" type="text" class="readonly" readonly>
+        </div>
+
+        <div>
+          <label for="shop">SHOP</label>
+          <div class="hint">เช่น TE1, TW, Sat1 (ระบบบังคับเป็นตัวพิมพ์ใหญ่)</div>
+          <input id="shop" type="text" placeholder="ระบุชื่อร้านค้า">
+        </div>
+
+        <div>
+          <label for="note">หมายเหตุ</label>
+          <textarea id="note" placeholder="ถ้าปล่อยว่าง ระบบจะใช้คำว่า “ขอเบิกป้าย” อัตโนมัติ"></textarea>
+        </div>
+
+        <div>
+          <label>เบิกขนาด</label>
+          <div class="sizes">
+            <div class="size-row" data-size="A4">
+              <label class="chk"><input type="checkbox" class="size-cb"> Size A4</label>
+              <div class="qty-wrap">
+                <label for="qtyA4">จำนวน</label>
+                <input id="qtyA4" type="number" class="qty" min="1" step="1" placeholder="0" disabled>
+              </div>
+              <span class="unit">ใบ</span>
+            </div>
+            <div class="size-row" data-size="A5">
+              <label class="chk"><input type="checkbox" class="size-cb"> Size A5</label>
+              <div class="qty-wrap">
+                <label for="qtyA5">จำนวน</label>
+                <input id="qtyA5" type="number" class="qty" min="1" step="1" placeholder="0" disabled>
+              </div>
+              <span class="unit">ใบ</span>
+            </div>
+            <div class="size-row" data-size="Name card">
+              <label class="chk"><input type="checkbox" class="size-cb"> Size Name card</label>
+              <div class="qty-wrap">
+                <label for="qtyNC">จำนวน</label>
+                <input id="qtyNC" type="number" class="qty" min="1" step="1" placeholder="0" disabled>
+              </div>
+              <span class="unit">ใบ</span>
+            </div>
+            <div class="size-row" data-size="Shelf Talk">
+              <label class="chk"><input type="checkbox" class="size-cb"> Size Shelf Talk</label>
+              <div class="qty-wrap">
+                <label for="qtyST">จำนวน</label>
+                <input id="qtyST" type="number" class="qty" min="1" step="1" placeholder="0" disabled>
+              </div>
+              <span class="unit">ใบ</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="btns">
+          <button id="genBtn">ปุ่มสร้างข้อความ</button>
+          <button id="copyBtn" class="secondary">ปุ่มคัดลอกข้อความ</button>
+          <button id="clearBtn" class="ghost">ปุ่ม Clear</button>
+          <span id="copied" class="ok">คัดลอกแล้ว ✓</span>
+        </div>
+
+        <div>
+          <label for="output">ผลลัพธ์ข้อความ</label>
+          <textarea id="output" readonly placeholder="ผลลัพธ์จะปรากฏหลังจากกด ‘ปุ่มสร้างข้อความ’"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- เพศ & โทนสี ----------
+    let gender = 'male';
+    const maleBtn = document.getElementById('maleBtn');
+    const femaleBtn = document.getElementById('femaleBtn');
+    function setGender(g){
+      gender = g;
+      const root = document.documentElement;
+      root.style.setProperty('--accent', g==='male'
+        ? getComputedStyle(root).getPropertyValue('--male')
+        : getComputedStyle(root).getPropertyValue('--female'));
+      maleBtn.setAttribute('aria-pressed', g==='male');
+      femaleBtn.setAttribute('aria-pressed', g==='female');
+    }
+    maleBtn.addEventListener('click', ()=>setGender('male'));
+    femaleBtn.addEventListener('click', ()=>setGender('female'));
+
+    // ---------- วันที่ปัจจุบัน (อ่านอย่างเดียว) ----------
+    const dateShow = document.getElementById('dateShow');
+    function setTodayText(){
+      const t = new Date();
+      const y = t.getFullYear();
+      const m = String(t.getMonth()+1).padStart(2,'0');
+      const d = String(t.getDate()).padStart(2,'0');
+      dateShow.value = `${d}/${m}/${y}`; // วัน/เดือน/ค.ศ.
+      return dateShow.value;
+    }
+    setTodayText();
+
+    // ---------- อินพุต SHOP & หมายเหตุ ----------
+    const elShop = document.getElementById('shop');
+    const elNote = document.getElementById('note');
+    const output = document.getElementById('output');
+    const copied = document.getElementById('copied');
+
+    // บังคับ SHOP เป็นตัวพิมพ์ใหญ่ขณะพิมพ์
+    elShop.addEventListener('input', ()=>{ elShop.value = elShop.value.toUpperCase(); });
+
+    // ---------- เช็คบ็อกซ์ & จำนวน ----------
+    document.querySelectorAll('.size-row').forEach(row=>{
+      const cb  = row.querySelector('.size-cb');
+      const qty = row.querySelector('.qty');
+      const toggle = ()=>{
+        qty.disabled = !cb.checked;
+        row.classList.toggle('disabled', !cb.checked);
+        if(!cb.checked){ qty.value = ''; }
+      };
+      toggle();
+      cb.addEventListener('change', toggle);
+    });
+
+    // ---------- สร้างข้อความ ----------
+    function buildMessage(){
+      const dateFmt = dateShow.value;
+      const shop = (elShop.value || '').trim().toUpperCase();
+      // ถ้า “หมายเหตุ” ว่าง → ใช้ “ขอเบิกป้าย”
+      const note = (elNote.value || '').trim() || 'ขอเบิกป้าย';
+
+      if(!shop){ alert('กรุณากรอก SHOP'); elShop.focus(); return; }
+
+      const linesSize = [];
+      document.querySelectorAll('.size-row').forEach(row=>{
+        const cb  = row.querySelector('.size-cb');
+        const qty = row.querySelector('.qty');
+        const sizeName = row.getAttribute('data-size');
+        if(cb.checked){
+          const n = parseInt(qty.value,10);
+          if(!n || n<=0){ qty.focus(); throw new Error(`กรุณาระบุจำนวนของ Size ${sizeName}`); }
+          linesSize.push(`- Size ${sizeName} = ${n} ใบ`);
+        }
+      });
+
+      const closing = gender === 'male' ? 'ขอบคุณครับ' : 'ขอบคุณค่ะ';
+
+      const lines = [
+        'KPT Form Request ป้าย Promotion',
+        `วันที่เบิก: ${dateFmt}`,
+        `SHOP: ${shop}`,
+        `หมายเหตุ: ${note}`,
+        ...(linesSize.length ? ['รายการขนาดที่ต้องการ:', ...linesSize] : ['(ไม่มีการเลือกขนาด)']),
+        closing
+      ];
+      output.value = lines.join('\n');
+    }
+
+    // ---------- คัดลอก & เคลียร์ ----------
+    async function copyOut(){
+      const text = output.value.trim();
+      if(!text){ alert('ยังไม่มีข้อความสำหรับคัดลอก'); return; }
+      try{
+        await navigator.clipboard.writeText(text);
+        copied.classList.add('show');
+        setTimeout(()=>copied.classList.remove('show'), 1400);
+      }catch(_){
+        output.select(); document.execCommand('copy');
+        copied.classList.add('show');
+        setTimeout(()=>copied.classList.remove('show'), 1400);
+      }
+    }
+
+    function clearAll(){
+      setTodayText();
+      elShop.value = '';
+      elNote.value = '';
+      output.value = '';
+      document.querySelectorAll('.size-row').forEach(row=>{
+        const cb  = row.querySelector('.size-cb');
+        const qty = row.querySelector('.qty');
+        cb.checked = false; qty.value = ''; qty.disabled = true; row.classList.add('disabled');
+      });
+      setGender('male');
+      elShop.focus();
+    }
+
+    // ---------- ปุ่ม ----------
+    document.getElementById('genBtn').addEventListener('click', ()=>{
+      try{ buildMessage(); }catch(e){ if(e?.message) alert(e.message); }
+    });
+    document.getElementById('copyBtn').addEventListener('click', copyOut);
+    document.getElementById('clearBtn').addEventListener('click', clearAll);
+  </script>
+</body>
+</html>
